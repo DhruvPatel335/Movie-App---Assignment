@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.android.assignment.models.Movie
 import com.android.assignment.models.MovieList
+import com.android.assignment.network.NetworkResult
 import com.android.assignment.repository.MovieRepository
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -15,8 +16,10 @@ import kotlinx.coroutines.launch
 class MovieViewModel : ViewModel() {
 
     private val movieRepository = MovieRepository()
-    private val movieList: StateFlow<MovieList>
+    private val movieList: StateFlow<NetworkResult<MovieList>>
         get() = movieRepository.getMovies
+    val movies: StateFlow<NetworkResult<MovieList>>
+        get() = movieList
 
     private val _searchQuery = MutableStateFlow("")
     val searchQuery: StateFlow<String> = _searchQuery
@@ -24,14 +27,16 @@ class MovieViewModel : ViewModel() {
     val filteredMovies: StateFlow<List<Movie>> = combine(
         movieList,
         _searchQuery
-    ) { movieList, query ->
-        if (query.isEmpty()) {
-            movieList.results
+    ) { result, query ->
+        if (result is NetworkResult.Success && query.isEmpty()) {
+            result.data?.results ?: emptyList()
+        } else if (result is NetworkResult.Success) {
+            result.data?.results?.filter { it.title.contains(query, ignoreCase = true) }
+                ?: emptyList()
         } else {
-            movieList.results.filter { it.title.contains(query, ignoreCase = true) }
+            emptyList()
         }
     }.stateIn(viewModelScope, SharingStarted.Lazily, emptyList())
-
     fun updateSearchQuery(query: String) {
         _searchQuery.value = query
     }
