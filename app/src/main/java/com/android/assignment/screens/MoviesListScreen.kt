@@ -16,6 +16,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Text
@@ -27,7 +28,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -38,7 +38,7 @@ import com.bumptech.glide.integration.compose.ExperimentalGlideComposeApi
 import com.bumptech.glide.integration.compose.GlideImage
 
 @Composable
-fun MovieListScreen(onClick: () -> Unit) {
+fun MovieListScreen(onClick: (title:String, posterImg:String, overView:String) -> Unit) {
     val movieViewModel: MovieViewModel = viewModel()
     val movies by movieViewModel.filteredMovies.collectAsState()
     val searchQuery by movieViewModel.searchQuery.collectAsState()
@@ -50,7 +50,7 @@ fun MovieListScreen(onClick: () -> Unit) {
         OutlinedTextField(
             value = searchQuery,
             onValueChange = { movieViewModel.updateSearchQuery(it) },
-            placeholder = { Text(text = "Search movies") },
+            placeholder = { Text(text = "Search movies", fontSize = 18.sp) },
             leadingIcon = {
                 Icon(
                     imageVector = Icons.Default.Search,
@@ -75,9 +75,9 @@ fun MovieListScreen(onClick: () -> Unit) {
             verticalArrangement = Arrangement.SpaceAround
         ) {
             items(movies) {
-                MovieItem(movieName = it.title, modalUrl = it.backdropPath!!){
-                    onClick()
-                }
+                MovieItem(movieName = it.title, modalUrl = it.backdropPath!!,  onClick = {
+                    onClick(it.title,it.posterPath,it.overview)
+                })
             }
         }
     }
@@ -105,14 +105,13 @@ fun MovieItem(movieName: String, modalUrl: String, onClick: () -> Unit) {
         )
         Text(
             text = movieName,
-            style = TextStyle(
+            style = MaterialTheme.typography.titleMedium,
                 color = Color.Black,
                 fontSize = 18.sp,
-                fontWeight = FontWeight.Normal
-            ),
+                fontWeight = FontWeight.Normal,
             modifier = Modifier
-                .padding(top = 8.dp)
+                .padding(top = 16.dp)
                 .align(Alignment.Start)
-        )
+            )
     }
 }

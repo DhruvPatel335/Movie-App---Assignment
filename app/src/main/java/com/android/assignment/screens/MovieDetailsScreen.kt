@@ -44,15 +44,15 @@ fun MovieDetailsScreen(
             .padding(16.dp)
     ) {
 
-            IconButton(onClick = { onBackClick() }) {
-                Icon(
-                    painter = painterResource(id = R.drawable.back_icon),
-                    contentDescription = "Back",
-                    modifier = Modifier
-                        .scale(0.6f),
-                    tint = Color.Black
-                )
-            }
+        IconButton(onClick = { onBackClick() }) {
+            Icon(
+                painter = painterResource(id = R.drawable.back_icon),
+                contentDescription = "Back",
+                modifier = Modifier
+                    .scale(0.6f),
+                tint = Color.Black
+            )
+        }
 
 
         Spacer(modifier = Modifier.height(16.dp))
@@ -73,16 +73,17 @@ fun MovieDetailsScreen(
             text = movieTitle,
             style = MaterialTheme.typography.titleMedium,
             fontSize = 32.sp,
-            fontWeight = FontWeight.SemiBold,
+            fontWeight = FontWeight.Normal,
             color = Color.Black,
             modifier = Modifier.padding(bottom = 8.dp)
         )
+        Spacer(modifier = Modifier.height(16.dp))
 
         Text(
             text = movieDescription,
             style = MaterialTheme.typography.titleSmall,
             color = Color.DarkGray,
-            lineHeight = 20.sp
+            fontSize = 16.sp,
         )
     }
 }
