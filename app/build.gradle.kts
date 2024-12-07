@@ -1,6 +1,17 @@
+import java.util.Properties
+
 plugins {
     alias(libs.plugins.androidApplication)
     alias(libs.plugins.jetbrainsKotlinAndroid)
+}
+
+val properties = Properties()
+val localPropertiesFile = rootProject.file("local.properties")
+
+if (localPropertiesFile.exists()) {
+    properties.load(localPropertiesFile.inputStream())
+} else {
+    println("local.properties file not found.")
 }
 
 android {
@@ -27,6 +38,11 @@ android {
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
             )
+            buildConfigField("String", "API_KEY", "\"${properties["API_KEY"]}\"")
+
+        }
+        debug {
+            buildConfigField("String", "API_KEY", "\"${properties["API_KEY"]}\"")
         }
     }
     compileOptions {
@@ -47,7 +63,11 @@ android {
             excludes += "/META-INF/{AL2.0,LGPL2.1}"
         }
     }
+    buildFeatures {
+        buildConfig = true
+    }
 }
+
 
 dependencies {
 
@@ -72,6 +92,6 @@ dependencies {
     implementation(libs.retrofit)
     implementation(libs.converter.gson)
     implementation(libs.logging.interceptor)
-    implementation (libs.compose)
+    implementation(libs.compose)
     implementation(libs.androidx.navigation.compose)
 }
