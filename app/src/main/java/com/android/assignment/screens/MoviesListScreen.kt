@@ -1,6 +1,7 @@
 package com.android.assignment.screens
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -37,7 +38,7 @@ import com.bumptech.glide.integration.compose.ExperimentalGlideComposeApi
 import com.bumptech.glide.integration.compose.GlideImage
 
 @Composable
-fun MovieListScreen() {
+fun MovieListScreen(onClick: () -> Unit) {
     val movieViewModel: MovieViewModel = viewModel()
     val movies by movieViewModel.filteredMovies.collectAsState()
     val searchQuery by movieViewModel.searchQuery.collectAsState()
@@ -74,7 +75,9 @@ fun MovieListScreen() {
             verticalArrangement = Arrangement.SpaceAround
         ) {
             items(movies) {
-                MovieItem(movieName = it.title, modalUrl = it.backdropPath!!)
+                MovieItem(movieName = it.title, modalUrl = it.backdropPath!!){
+                    onClick()
+                }
             }
         }
     }
@@ -83,11 +86,12 @@ fun MovieListScreen() {
 
 @OptIn(ExperimentalGlideComposeApi::class)
 @Composable
-fun MovieItem(movieName: String, modalUrl: String) {
+fun MovieItem(movieName: String, modalUrl: String, onClick: () -> Unit) {
     Column(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(8.dp),
+            .padding(8.dp).clickable { onClick()
+            },
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         GlideImage(

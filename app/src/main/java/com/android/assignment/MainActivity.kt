@@ -12,6 +12,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.android.assignment.screens.MovieDetailsScreen
 import com.android.assignment.screens.MovieListScreen
 import com.android.assignment.ui.theme.AndroidEngineerAssignmentTheme
 
@@ -32,11 +33,20 @@ class MainActivity : ComponentActivity() {
 }
 
 @Composable
-fun App(){
+fun App() {
     val navController = rememberNavController()
-    NavHost(navController = navController, startDestination = "MovieListScreen"){
-        composable("MovieListScreen"){
-            MovieListScreen()
+    NavHost(navController = navController, startDestination = "MovieListScreen") {
+        composable("MovieListScreen") {
+            MovieListScreen() {
+                navController.navigate("MovieDetailsScreen")
+            }
+        }
+        composable("MovieDetailsScreen") {
+            MovieDetailsScreen(
+                "Dummy",
+                "dioqwndqwodq",
+                "/ugQkpGajKFQ8eyOEhGheR0HfWQ.jpg"
+            ) { navController.popBackStack() }
         }
     }
 }
@@ -45,6 +55,6 @@ fun App(){
 @Composable
 fun MovieListPreview() {
     AndroidEngineerAssignmentTheme {
-        MovieListScreen()
+
     }
 }
