@@ -14,11 +14,15 @@ class MovieRepository {
 
     suspend fun getMovies() {
         movieList.emit(NetworkResult.Loading())
-        val response = apiService.getMovieList()
-        if (response.isSuccessful && response.body() != null) {
-            movieList.emit(NetworkResult.Success(response.body()!!))
-        } else {
-            movieList.emit(NetworkResult.Failure("Error: ${response.message()}"))
+        try {
+            val response = apiService.getMovieList()
+            if (response.isSuccessful && response.body() != null) {
+                movieList.emit(NetworkResult.Success(response.body()!!))
+            } else {
+                movieList.emit(NetworkResult.Failure("Error: ${response.message()}"))
+            }
+        } catch (e: Exception) {
+            movieList.emit(NetworkResult.Failure("Error: ${e.localizedMessage}"))
         }
     }
 }
